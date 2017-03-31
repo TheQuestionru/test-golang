@@ -24,3 +24,9 @@ Install the dependencies and build the project:
 ```bash
 make 
 ```
+
+# Task
+
+Add TeamCity element type to dashboard, including tests.
+
+Any questions to: `ngalayko@thequestion.ru`
