@@ -24,7 +24,7 @@ func NewTcClient(config Config) TcClient {
 	}
 
 	return &tcClient{
-		apiClient: teamcity.NewClient("https://localhost:8111", teamcity.GuestAuth()),
+		apiClient: teamcity.NewClient(config.TeamCityAddr, teamcity.GuestAuth()),
 	}
 }
 
