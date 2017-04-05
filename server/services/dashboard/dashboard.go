@@ -83,11 +83,12 @@ func (t *dashboard) getDashboardGrid() ([][]*schema.DashboardElementView, error)
 
 				elementView.Realtime = types.NewNullInt64(realtime)
 			case schema.DashboardElementTypeNRServers:
-				var err error
-				elementView.Servers, err = t.sideStats.ServersStats()
+				servers, err := t.sideStats.ServersStats()
 				if err != nil {
 					return nil, err
 				}
+
+				elementView.Servers = servers
 			}
 
 			rowView = append(rowView, elementView)
