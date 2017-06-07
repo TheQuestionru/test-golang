@@ -51,6 +51,14 @@ func NewTestNrClient() NrClient {
 	return &testNrClient{}
 }
 
+type testTeamCityAPI struct {
+	//
+}
+
+func NewTestTeamCityClient() TeamCityClient {
+	return &testTeamCityAPI{}
+}
+
 func (t *testNrClient) GetServersStats() ([]newrelic.Server, error) {
 	servers := []newrelic.Server{}
 

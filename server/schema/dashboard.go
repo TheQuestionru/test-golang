@@ -2,10 +2,10 @@ package schema
 
 import (
 	"database/sql/driver"
+	"reflect"
 	"fmt"
 	"github.com/TheQuestionru/thequestion/server/types"
 	"github.com/yfronto/newrelic"
-	"reflect"
 )
 
 // errors
@@ -54,6 +54,7 @@ type DashboardElementView struct {
 
 	Realtime types.NullInt64   `json:"realtime"`
 	Servers  []newrelic.Server `json:"servers,omitempty"`
+	TeamCity  []newrelic.Server `json:"teamcity,omitempty"`
 }
 
 // forms
@@ -75,6 +76,7 @@ const (
 	DashboardElementTypeReportTemplate DashboardElementType = "report"
 	DashboardElementTypeGARealtime     DashboardElementType = "ga-realtime"
 	DashboardElementTypeNRServers      DashboardElementType = "nr-servers"
+	DashboardElementTypeTeamCity      DashboardElementType = "team-city"
 )
 
 func (t DashboardElementType) Clean() DashboardElementType {

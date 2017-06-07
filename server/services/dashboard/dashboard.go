@@ -82,9 +82,16 @@ func (t *dashboard) getDashboardGrid() ([][]*schema.DashboardElementView, error)
 				}
 
 				elementView.Realtime = types.NewNullInt64(realtime)
+
 			case schema.DashboardElementTypeNRServers:
 				var err error
 				elementView.Servers, err = t.sideStats.ServersStats()
+				if err != nil {
+					return nil, err
+				}
+			case schema.DashboardElementTypeTeamCity:
+				var err error
+				elementView.TeamCity, err = t.sideStats.TeamCityView()
 				if err != nil {
 					return nil, err
 				}
