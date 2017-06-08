@@ -3,6 +3,7 @@ package stats_side
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/TheQuestionru/thequestion/server/schema"
 	"github.com/ivankorobkov/di"
 	"net/http"
 )
@@ -13,25 +14,8 @@ func TcClientModule(m *di.Module) {
 }
 
 type (
-	BaseResponse struct {
-		Count int    `json:"count"`
-		Href  string `json:"href"`
-	}
-
-	AgentsResponse struct {
-		BaseResponse
-		Agents []Agent `json:"agent"`
-	}
-
-	Agent struct {
-		Id     int    `json:"id"`
-		Name   string `json:"name"`
-		TypeID int    `json:"typeId"`
-		Href   string `json:"href"`
-	}
-
 	TcClient interface {
-		GetAgents() ([]Agent, error)
+		GetAgents() ([]schema.Agent, error)
 	}
 
 	tcClient struct {
@@ -51,8 +35,8 @@ func NewTcClient(config Config) TcClient {
 	}
 }
 
-func (t *tcClient) GetAgents() ([]Agent, error) {
-	agents := &AgentsResponse{}
+func (t *tcClient) GetAgents() ([]schema.Agent, error) {
+	agents := &schema.AgentsResponse{}
 	err := t.load(
 		"GET",
 		"agents",

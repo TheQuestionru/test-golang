@@ -39,6 +39,25 @@ type DashboardElement struct {
 	DeletedAt types.NullTime `json:"deletedAt" db:"deleted_at"`
 }
 
+// teamcity
+
+type BaseResponse struct {
+	Count int    `json:"count"`
+	Href  string `json:"href"`
+}
+
+type AgentsResponse struct {
+	BaseResponse
+	Agents []Agent `json:"agent"`
+}
+
+type Agent struct {
+	Id     int    `json:"id"`
+	Name   string `json:"name"`
+	TypeID int    `json:"typeId"`
+	Href   string `json:"href"`
+}
+
 // view
 
 type DashboardView struct {
@@ -54,6 +73,7 @@ type DashboardElementView struct {
 
 	Realtime types.NullInt64   `json:"realtime"`
 	Servers  []newrelic.Server `json:"servers,omitempty"`
+	Agents   []Agent           `json:"agents,omitempty"`
 }
 
 // forms
@@ -75,12 +95,13 @@ const (
 	DashboardElementTypeReportTemplate DashboardElementType = "report"
 	DashboardElementTypeGARealtime     DashboardElementType = "ga-realtime"
 	DashboardElementTypeNRServers      DashboardElementType = "nr-servers"
+	DashboardElementTypeTCAgents       DashboardElementType = "tc-agents"
 )
 
 func (t DashboardElementType) Clean() DashboardElementType {
 	switch t {
 	case DashboardElementTypeReportTemplate, DashboardElementTypeGARealtime,
-		DashboardElementTypeNRServers:
+		DashboardElementTypeNRServers, DashboardElementTypeTCAgents:
 		return t
 	default:
 		return DashboardElementTypeInvalid

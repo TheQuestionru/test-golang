@@ -75,8 +75,8 @@ func NewTestTcClient() TcClient {
 	return &testTcClient{}
 }
 
-func (t *testTcClient) GetAgents() ([]Agent, error) {
-	return []Agent{
+func (t *testTcClient) GetAgents() ([]schema.Agent, error) {
+	return []schema.Agent{
 		{Id: 0, Name: "Test agent0", TypeID: 0, Href: "Href0"},
 		{Id: 1, Name: "Test agent1", TypeID: 1, Href: "Href1"},
 		{Id: 2, Name: "Test agent2", TypeID: 2, Href: "Href2"},
