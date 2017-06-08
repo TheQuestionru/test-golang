@@ -28,6 +28,8 @@ type Config struct {
 	Enabled              bool              `yaml:"Enabled"`
 	Schedule             string            `yaml:"Schedule"`
 	NewRelicApiKey       string            `yaml:"NewRelicApiKey"`
+	TeamcityAuthHeader   string            `yaml:"TeamcityAuthHeader"`
+	TeamcityEndpoint     string            `yaml:"TeamcityEndpoint"`
 }
 
 type SideStats interface {
