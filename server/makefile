@@ -14,5 +14,5 @@ install:
 	@ go install ./...
 
 test:
-	@ go test -p 1 ./...
+	@ go test -cover -v `go list ./... | grep -v /vendor/`
 
