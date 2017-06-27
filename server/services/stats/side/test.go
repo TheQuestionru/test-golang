@@ -2,16 +2,17 @@ package stats_side
 
 import (
 	"errors"
+	"fmt"
+	"math/rand"
 	"testing"
 	"time"
 
-	"fmt"
 	"github.com/TheQuestionru/thequestion/server/lib/logger"
 	"github.com/TheQuestionru/thequestion/server/schema"
 	"github.com/TheQuestionru/thequestion/server/types"
 	"github.com/ivankorobkov/di"
+	"github.com/kapitanov/go-teamcity"
 	"github.com/yfronto/newrelic"
-	"math/rand"
 )
 
 func TestModule(m *di.Module) {
@@ -20,6 +21,7 @@ func TestModule(m *di.Module) {
 	m.AddConstructor(NewTestConfig)
 	m.AddConstructor(NewTestGaClient)
 	m.AddConstructor(NewNrClient)
+	m.AddConstructor(NewTcClient)
 	m.AddConstructor(NewTest)
 }
 
@@ -27,10 +29,11 @@ type TestStats struct {
 	SideStats
 	gaClient GaClient
 	nrClient NrClient
+	tcClient TcClient
 }
 
-func NewTest(s SideStats, gaClient GaClient, nrClient NrClient) *TestStats {
-	ret := &TestStats{s, gaClient, nrClient}
+func NewTest(s SideStats, gaClient GaClient, nrClient NrClient, tcClient TcClient) *TestStats {
+	ret := &TestStats{s, gaClient, nrClient, tcClient}
 	return ret
 }
 
@@ -40,6 +43,7 @@ func NewTestConfig() Config {
 		Enabled:              true,
 		GoogleAnalyticsIds:   map[string]string{"TheQuestion": "ga:91655992"},
 		NewRelicApiKey:       "test",
+		TeamCityAddress:      "test",
 	}
 }
 
@@ -97,7 +101,6 @@ func (c *testGaClient) GaGetQuestionsData(id string, from time.Time, to time.Tim
 }
 
 func (c *testGaClient) GaGetRealtime(id string) (int64, error) {
-
 	return rand.Int63n(int64(10000)), nil
 }
 
@@ -135,3 +138,27 @@ var ErrTestDfpNetworkMissing = errors.New("Network incorrect")
 var ErrTestDfpIncorrectJobId = errors.New("Job id incorrect")
 var ErrTestDfpIncorrectJobStatus = errors.New("Job not ready")
 var ErrTestDfpIncorrectUrl = errors.New("Incorrect url")
+
+type testTcClient struct {
+	count int
+}
+
+func NewTestTcClient() TcClient {
+	return &testTcClient{}
+}
+
+func (t *testTcClient) GetProjects() ([]teamcity.Project, error) {
+	var projects []teamcity.Project
+
+	for i := 0; i < 10; i++ {
+		count := t.count
+		t.count++
+
+		projects = append(projects, teamcity.Project{
+			ID:   fmt.Sprintf("#%v", count),
+			Name: fmt.Sprintf("test project name %v", count),
+		})
+	}
+
+	return projects, nil
+}
