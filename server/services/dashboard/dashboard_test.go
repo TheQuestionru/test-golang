@@ -1,11 +1,12 @@
 package dashboard
 
 import (
+	"os"
+	"testing"
+
 	"github.com/TheQuestionru/thequestion/server/types"
 	"github.com/ivankorobkov/di"
 	"github.com/stretchr/testify/assert"
-	"os"
-	"testing"
 )
 
 var test struct {
