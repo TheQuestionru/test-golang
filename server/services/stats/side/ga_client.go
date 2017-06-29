@@ -43,7 +43,7 @@ type gaClient struct {
 }
 
 func NewGaClient(logger logger.Logger, config Config) GaClient {
-	if config.GoogleServiceKeyFile == "test" {
+	if config.GoogleServiceKeyFile == TestGoogleServiceKeyFile {
 		return NewTestGaClient(config)
 	}
 

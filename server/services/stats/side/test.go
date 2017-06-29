@@ -20,6 +20,7 @@ func TestModule(m *di.Module) {
 	m.AddConstructor(NewTestConfig)
 	m.AddConstructor(NewTestGaClient)
 	m.AddConstructor(NewNrClient)
+	m.AddConstructor(NewTcClient)
 	m.AddConstructor(NewTest)
 }
 
@@ -27,19 +28,21 @@ type TestStats struct {
 	SideStats
 	gaClient GaClient
 	nrClient NrClient
+	tcClient TcClient
 }
 
-func NewTest(s SideStats, gaClient GaClient, nrClient NrClient) *TestStats {
-	ret := &TestStats{s, gaClient, nrClient}
+func NewTest(s SideStats, gaClient GaClient, nrClient NrClient, tcClient TcClient) *TestStats {
+	ret := &TestStats{s, gaClient, nrClient, tcClient}
 	return ret
 }
 
 func NewTestConfig() Config {
 	return Config{
-		GoogleServiceKeyFile: "test",
+		GoogleServiceKeyFile: TestGoogleServiceKeyFile,
 		Enabled:              true,
 		GoogleAnalyticsIds:   map[string]string{"TheQuestion": "ga:91655992"},
-		NewRelicApiKey:       "test",
+		NewRelicApiKey:       TestNewRelicApiKey,
+		TeamCityAddress:      TestTeamCityAddress,
 	}
 }
 
@@ -114,6 +117,20 @@ func (c *testGaClient) setSummary(row *schema.AnalyticsGaRow) {
 
 func (c *testGaClient) setQuestions(rows map[int64]*schema.AnalyticsGaRow) {
 	c.questions = rows
+}
+
+type testTsClient struct{}
+
+func NewTestTcClient() TcClient {
+	return &testTsClient{}
+}
+
+func (t *testTsClient) GetTCBuildInfo() (*TCBuildInfo, error) {
+	return &TCBuildInfo{
+		BuildStatuses:     []string{"SUCCESS", "FAILURE", "ERROR"},
+		LastChangesAuthor: "Alison",
+		LastChangesDate:   "20150714T121353+0000",
+	}, nil
 }
 
 func (s *TestStats) TestSummary(t *testing.T, gaId string) *schema.AnalyticsGaRow {

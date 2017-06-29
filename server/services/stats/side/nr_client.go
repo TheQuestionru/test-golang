@@ -19,7 +19,7 @@ type nrClient struct {
 }
 
 func NewNrClient(config Config) NrClient {
-	if config.NewRelicApiKey == "test" {
+	if config.NewRelicApiKey == TestNewRelicApiKey {
 		return NewTestNrClient()
 	}
 

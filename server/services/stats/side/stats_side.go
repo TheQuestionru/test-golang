@@ -28,7 +28,17 @@ type Config struct {
 	Enabled              bool              `yaml:"Enabled"`
 	Schedule             string            `yaml:"Schedule"`
 	NewRelicApiKey       string            `yaml:"NewRelicApiKey"`
+	TeamCityAddress      string            `yaml:"TeamCityAddress"`
+	TeamCityLogin        string            `yaml:"TeamCityLogin,omitempty"`
+	TeamCityPassword     string            `yaml:"TeamCityPassword,omitempty"`
+	TeamCityBuildNumber  int               `yaml:"TeamCityBuildNumber,omitempty"`
 }
+
+const (
+	TestGoogleServiceKeyFile = "test"
+	TestNewRelicApiKey       = "test"
+	TestTeamCityAddress      = "test"
+)
 
 type SideStats interface {
 	RunUpdateGa()
