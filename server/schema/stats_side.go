@@ -3,7 +3,7 @@ package schema
 import (
 	"time"
 
-	"github.com/TheQuestionru/thequestion/server/types"
+	"github.com/TheQuestionru/test-golang/server/types"
 )
 
 // Dfp

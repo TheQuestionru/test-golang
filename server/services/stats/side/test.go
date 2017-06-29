@@ -6,12 +6,13 @@ import (
 	"time"
 
 	"fmt"
-	"github.com/TheQuestionru/thequestion/server/lib/logger"
-	"github.com/TheQuestionru/thequestion/server/schema"
-	"github.com/TheQuestionru/thequestion/server/types"
+	"github.com/TheQuestionru/test-golang/server/lib/logger"
+	"github.com/TheQuestionru/test-golang/server/schema"
+	"github.com/TheQuestionru/test-golang/server/types"
 	"github.com/ivankorobkov/di"
 	"github.com/yfronto/newrelic"
 	"math/rand"
+	"github.com/kapitanov/go-teamcity"
 )
 
 func TestModule(m *di.Module) {
@@ -20,6 +21,7 @@ func TestModule(m *di.Module) {
 	m.AddConstructor(NewTestConfig)
 	m.AddConstructor(NewTestGaClient)
 	m.AddConstructor(NewNrClient)
+	m.AddConstructor(NewTcClient)
 	m.AddConstructor(NewTest)
 }
 
@@ -27,10 +29,11 @@ type TestStats struct {
 	SideStats
 	gaClient GaClient
 	nrClient NrClient
+	tcClient TcClient
 }
 
-func NewTest(s SideStats, gaClient GaClient, nrClient NrClient) *TestStats {
-	ret := &TestStats{s, gaClient, nrClient}
+func NewTest(s SideStats, gaClient GaClient, nrClient NrClient, tcClient TcClient) *TestStats {
+	ret := &TestStats{s, gaClient, nrClient, tcClient}
 	return ret
 }
 
@@ -40,6 +43,7 @@ func NewTestConfig() Config {
 		Enabled:              true,
 		GoogleAnalyticsIds:   map[string]string{"TheQuestion": "ga:91655992"},
 		NewRelicApiKey:       "test",
+		TeamCityAddress:      "test",
 	}
 }
 
@@ -49,6 +53,31 @@ type testNrClient struct {
 
 func NewTestNrClient() NrClient {
 	return &testNrClient{}
+}
+
+type testTcClient struct {
+
+}
+
+func NewTestTcClient() TcClient {
+	return &testTcClient{}
+}
+
+func (t *testTcClient) GetProjectsStatus() ([]teamcity.Project, error) {
+	return []teamcity.Project{
+		teamcity.Project{
+			ID: "1",
+			Name: "Name1",
+			Description: "Description1",
+			ParentProjectID: "",
+		},
+		teamcity.Project{
+			ID: "2",
+			Name: "Name2",
+			Description: "Description2",
+			ParentProjectID: "1",
+		},
+	}, nil
 }
 
 func (t *testNrClient) GetServersStats() ([]newrelic.Server, error) {

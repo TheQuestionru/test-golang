@@ -1,7 +1,7 @@
 package dashboard
 
 import (
-	"github.com/TheQuestionru/thequestion/server/types"
+	"github.com/TheQuestionru/test-golang/server/types"
 	"github.com/ivankorobkov/di"
 	"github.com/stretchr/testify/assert"
 	"os"

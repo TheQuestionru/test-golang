@@ -3,9 +3,10 @@ package schema
 import (
 	"database/sql/driver"
 	"fmt"
-	"github.com/TheQuestionru/thequestion/server/types"
+	"github.com/TheQuestionru/test-golang/server/types"
 	"github.com/yfronto/newrelic"
 	"reflect"
+	"github.com/kapitanov/go-teamcity"
 )
 
 // errors
@@ -52,8 +53,9 @@ type DashboardRowView struct {
 type DashboardElementView struct {
 	*DashboardElement
 
-	Realtime types.NullInt64   `json:"realtime"`
-	Servers  []newrelic.Server `json:"servers,omitempty"`
+	Realtime types.NullInt64  	`json:"realtime"`
+	Servers  []newrelic.Server 	`json:"servers,omitempty"`
+	Projects []teamcity.Project	`json:"projects,omitempty"`
 }
 
 // forms
@@ -75,12 +77,13 @@ const (
 	DashboardElementTypeReportTemplate DashboardElementType = "report"
 	DashboardElementTypeGARealtime     DashboardElementType = "ga-realtime"
 	DashboardElementTypeNRServers      DashboardElementType = "nr-servers"
+	DashboradElementTypeTCClients      DashboardElementType = "tc-clients"
 )
 
 func (t DashboardElementType) Clean() DashboardElementType {
 	switch t {
 	case DashboardElementTypeReportTemplate, DashboardElementTypeGARealtime,
-		DashboardElementTypeNRServers:
+		DashboardElementTypeNRServers, DashboradElementTypeTCClients:
 		return t
 	default:
 		return DashboardElementTypeInvalid
