@@ -52,8 +52,11 @@ type DashboardRowView struct {
 type DashboardElementView struct {
 	*DashboardElement
 
-	Realtime types.NullInt64   `json:"realtime"`
-	Servers  []newrelic.Server `json:"servers,omitempty"`
+	Realtime          types.NullInt64   `json:"realtime"`
+	Servers           []newrelic.Server `json:"servers,omitempty"`
+	BuildStatuses     []string          `json:"lastBuilds,omitempty"`
+	LastChangesAuthor types.NullString  `json:"lastChangesAuthor,omitempty"`
+	LastChangesDate   types.NullString  `json:"lastChangesDate,omitempty"`
 }
 
 // forms
@@ -75,16 +78,22 @@ const (
 	DashboardElementTypeReportTemplate DashboardElementType = "report"
 	DashboardElementTypeGARealtime     DashboardElementType = "ga-realtime"
 	DashboardElementTypeNRServers      DashboardElementType = "nr-servers"
+	DashboardElementTypeTCBuilds       DashboardElementType = "tc-builds"
 )
 
 func (t DashboardElementType) Clean() DashboardElementType {
-	switch t {
-	case DashboardElementTypeReportTemplate, DashboardElementTypeGARealtime,
-		DashboardElementTypeNRServers:
-		return t
-	default:
-		return DashboardElementTypeInvalid
+	validValues := map[DashboardElementType]bool{
+		DashboardElementTypeReportTemplate: true,
+		DashboardElementTypeGARealtime:     true,
+		DashboardElementTypeNRServers:      true,
+		DashboardElementTypeTCBuilds:       true,
 	}
+
+	if _, ok := validValues[t]; ok {
+		return t
+	}
+
+	return DashboardElementTypeInvalid
 }
 
 func (t DashboardElementType) Validate() error {
