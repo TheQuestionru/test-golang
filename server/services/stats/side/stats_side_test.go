@@ -35,3 +35,14 @@ func TestSideStats_ServersStats(t *testing.T) {
 
 	assert.Equal(t, 10, len(servers))
 }
+
+func TestSideStats_TCBuildInfo(t *testing.T) {
+	tcBuildInfo, err := test.Stats.TCBuildInfo()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Equal(t, []string{"SUCCESS", "FAILURE", "ERROR"}, tcBuildInfo.BuildStatuses)
+	assert.Equal(t, "Alison", tcBuildInfo.LastChangesAuthor)
+	assert.Equal(t, "20150714T121353+0000", tcBuildInfo.LastChangesDate)
+}

@@ -33,6 +33,12 @@
 			"revisionTime": "2017-03-28T06:15:53Z"
 		},
 		{
+			"checksumSHA1": "np0qU9pf1EwHgXCBzJpr6OU8wbY=",
+			"path": "github.com/GSokol/go-teamcity",
+			"revision": "44966bb56f74eb37bcfab368a3fe5ca6a9e401ac",
+			"revisionTime": "2017-06-29T14:20:52Z"
+		},
+		{
 			"checksumSHA1": "CEonWSn+KAO6bqzJCvPU0o9HhtY=",
 			"path": "github.com/Sirupsen/logrus",
 			"revision": "10f801ebc38b33738c9d17d50860f484a0988ff5",
@@ -261,7 +267,7 @@
 			"revisionTime": "2017-03-17T17:13:11Z"
 		},
 		{
-			"checksumSHA1": "PnW/QEOiQ6yvzkWVxIEzt4/sLTU=",
+			"checksumSHA1": "VAKwmrxjTr/c/OagJQkJaWhxaWM=",
 			"path": "golang.org/x/sys/unix",
 			"revision": "9a7256cb28ed514b4e1e5f68959914c4c28a92e0",
 			"revisionTime": "2017-03-29T05:31:33Z"
@@ -297,7 +303,7 @@
 			"revisionTime": "2017-03-30T05:43:03Z"
 		},
 		{
-			"checksumSHA1": "QMDzHI+3CF2OGwgLM3Oa/5LoF+8=",
+			"checksumSHA1": "4cDoYvWO+zfpt+9E/s43sayQz+I=",
 			"path": "golang.org/x/text/language",
 			"revision": "65f4f820a7954b82e5c9325e1e088a4fda098f36",
 			"revisionTime": "2017-03-30T05:43:03Z"
@@ -315,25 +321,25 @@
 			"revisionTime": "2017-03-30T05:43:03Z"
 		},
 		{
-			"checksumSHA1": "QUjR6mu4hImTsoCF1AuhCiocAKg=",
+			"checksumSHA1": "/Z6zEIHTJYowfpbusyOokef7oEg=",
 			"path": "golang.org/x/text/unicode/bidi",
 			"revision": "65f4f820a7954b82e5c9325e1e088a4fda098f36",
 			"revisionTime": "2017-03-30T05:43:03Z"
 		},
 		{
-			"checksumSHA1": "INgqY3BrAsFW9jRC/EYhiRq+P+E=",
+			"checksumSHA1": "yvg1iOoW7KukrRNynA/zdJHNbno=",
 			"path": "golang.org/x/text/unicode/cldr",
 			"revision": "65f4f820a7954b82e5c9325e1e088a4fda098f36",
 			"revisionTime": "2017-03-30T05:43:03Z"
 		},
 		{
-			"checksumSHA1": "qlGIztQ60tqGv1pydx5FTgSEQYo=",
+			"checksumSHA1": "WMaxyFmqyVsi5TW2ZYmYmeK0f3U=",
 			"path": "golang.org/x/text/unicode/norm",
 			"revision": "65f4f820a7954b82e5c9325e1e088a4fda098f36",
 			"revisionTime": "2017-03-30T05:43:03Z"
 		},
 		{
-			"checksumSHA1": "GZWgNojmCEZfFA74Vbwlg5z76ik=",
+			"checksumSHA1": "NMC5fm2AlSQ893NNL3Y7RuaZZD0=",
 			"path": "golang.org/x/text/unicode/rangetable",
 			"revision": "65f4f820a7954b82e5c9325e1e088a4fda098f36",
 			"revisionTime": "2017-03-30T05:43:03Z"

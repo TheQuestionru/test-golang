@@ -18,6 +18,7 @@ func Module(m *di.Module) {
 		Config
 		GaClient
 		NrClient
+		TcClient
 	}{})
 }
 
@@ -45,12 +46,14 @@ type SideStats interface {
 
 	Realtime() (int64, error)
 	ServersStats() ([]newrelic.Server, error)
+	TCBuildInfo() (*TCBuildInfo, error)
 }
 
 type sideStats struct {
 	logger   logger.Logger
 	gaClient GaClient
 	nrClient NrClient
+	tcClient TcClient
 	config   Config
 }
 
@@ -63,11 +66,12 @@ const (
 )
 
 func New(logger logger.Logger, config Config, gaClient GaClient,
-	nrClient NrClient) SideStats {
+	nrClient NrClient, tcClient TcClient) SideStats {
 	return &sideStats{
 		logger:   logger.Prefix("side-stats"),
 		gaClient: gaClient,
 		nrClient: nrClient,
+		tcClient: tcClient,
 		config:   config,
 	}
 }
@@ -95,6 +99,10 @@ func (t *sideStats) Realtime() (int64, error) {
 
 func (t *sideStats) ServersStats() ([]newrelic.Server, error) {
 	return t.nrClient.GetServersStats()
+}
+
+func (t *sideStats) TCBuildInfo() (*TCBuildInfo, error) {
+	return t.tcClient.GetTCBuildInfo()
 }
 
 func (s *sideStats) tryRunUpdateGa(timestamp time.Time) error {
