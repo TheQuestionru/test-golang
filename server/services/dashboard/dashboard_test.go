@@ -25,4 +25,7 @@ func TestDashboard_UpdateElements__should_update_elements(t *testing.T) {
 	}
 
 	assert.Equal(t, 10, len(dashboard.Rows[0].Elements[0].Servers))
+	assert.Equal(t, []string{"SUCCESS", "FAILURE", "ERROR"}, dashboard.Rows[0].Elements[1].BuildStatuses)
+	assert.Equal(t, "Alison", dashboard.Rows[0].Elements[1].LastChangesAuthor.String)
+	assert.Equal(t, "20150714T121353+0000", dashboard.Rows[0].Elements[1].LastChangesDate.String)
 }

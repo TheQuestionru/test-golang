@@ -58,13 +58,23 @@ func (t *dashboard) GetDashboard(req types.Req) (*schema.DashboardView, error) {
 func (t *dashboard) getDashboardGrid() ([][]*schema.DashboardElementView, error) {
 	elements := []*schema.DashboardElement{} // simulate db query
 
-	elements = append(elements, &schema.DashboardElement{
-		RowNumber: 0,
-		ColNumber: 0,
-		DashboardElementKey: schema.DashboardElementKey{
-			Type: schema.DashboardElementTypeNRServers,
+	elements = append(
+		elements,
+		&schema.DashboardElement{
+			RowNumber: 0,
+			ColNumber: 0,
+			DashboardElementKey: schema.DashboardElementKey{
+				Type: schema.DashboardElementTypeNRServers,
+			},
 		},
-	})
+		&schema.DashboardElement{
+			RowNumber: 0,
+			ColNumber: 1,
+			DashboardElementKey: schema.DashboardElementKey{
+				Type: schema.DashboardElementTypeTCBuilds,
+			},
+		},
+	)
 
 	grid := t.makeGrid(elements)
 	view := [][]*schema.DashboardElementView{}
@@ -88,6 +98,15 @@ func (t *dashboard) getDashboardGrid() ([][]*schema.DashboardElementView, error)
 				if err != nil {
 					return nil, err
 				}
+			case schema.DashboardElementTypeTCBuilds:
+				tcBuildInfo, err := t.sideStats.TCBuildInfo()
+				if err != nil {
+					return nil, err
+				}
+
+				elementView.BuildStatuses = tcBuildInfo.BuildStatuses
+				elementView.LastChangesAuthor = types.NewNullString(tcBuildInfo.LastChangesAuthor)
+				elementView.LastChangesDate = types.NewNullString(tcBuildInfo.LastChangesDate)
 			}
 
 			rowView = append(rowView, elementView)
