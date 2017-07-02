@@ -14,7 +14,6 @@ var test struct {
 
 func TestMain(m *testing.M) {
 	di.MustFill(&test, TestModule)
-
 	os.Exit(m.Run())
 }
 

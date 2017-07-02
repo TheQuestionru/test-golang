@@ -19,6 +19,7 @@ func Module(m *di.Module) {
 		Config
 		GaClient
 		NrClient
+		TcClient
 	}{})
 }
 

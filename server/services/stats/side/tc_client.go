@@ -21,6 +21,9 @@ type tcClient struct {
 
 func NewTcClient(config Config) TcClient {
 
+	if config.TeamCityHost == "test" {
+		return NewTestTcClient()
+	}
 	return &tcClient{
 		CountGetTask: config.TeamCityCountGetTask,
 		apiClient:    teamcity.New(config.TeamCityHost, config.TeamCityUser, config.TeamCityPass),

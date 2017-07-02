@@ -19,8 +19,8 @@ func TestModule(m *di.Module) {
 	m.Import(Module)
 	m.Import(logger.TestModule)
 	m.AddConstructor(NewTestConfig)
+	m.AddConstructor(NewTcClient)
 	m.AddConstructor(NewTestGaClient)
-	m.AddConstructor(NewTestTcClient)
 	m.AddConstructor(NewNrClient)
 	m.AddConstructor(NewTest)
 }
