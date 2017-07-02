@@ -1,6 +1,7 @@
 package dashboard
 
 import (
+	"github.com/TheQuestionru/thequestion/server/schema"
 	"github.com/TheQuestionru/thequestion/server/types"
 	"github.com/ivankorobkov/di"
 	"github.com/stretchr/testify/assert"
@@ -24,5 +25,9 @@ func TestDashboard_UpdateElements__should_update_elements(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	assert.Equal(t, 1, len(dashboard.Rows))
+	assert.Equal(t, 2, len(dashboard.Rows[0].Elements))
+	assert.Equal(t, schema.DashboardElementTypeNRServers, dashboard.Rows[0].Elements[0].Type)
+	assert.Equal(t, schema.DashboardElementTypeTeamCity, dashboard.Rows[0].Elements[1].Type)
 	assert.Equal(t, 10, len(dashboard.Rows[0].Elements[0].Servers))
 }
