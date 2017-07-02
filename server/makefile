@@ -14,5 +14,4 @@ install:
 	@ go install ./...
 
 test:
-	@ go test -p 1 ./...
-
+	@ go test -p 1 `go list ./... | grep -v vendor`
