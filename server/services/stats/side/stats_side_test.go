@@ -35,3 +35,12 @@ func TestSideStats_ServersStats(t *testing.T) {
 
 	assert.Equal(t, 10, len(servers))
 }
+
+func TestSideStats_BuildStats(t *testing.T) {
+	tasks, err := test.Stats.BuildStats()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Equal(t, 5, len(tasks))
+}

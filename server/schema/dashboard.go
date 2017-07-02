@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"github.com/TheQuestionru/thequestion/server/types"
+	"github.com/abourget/teamcity"
 	"github.com/yfronto/newrelic"
 	"reflect"
 )
@@ -54,6 +55,7 @@ type DashboardElementView struct {
 
 	Realtime types.NullInt64   `json:"realtime"`
 	Servers  []newrelic.Server `json:"servers,omitempty"`
+	Tasks    []*teamcity.Build `json:"tasks,omitempty"`
 }
 
 // forms
@@ -75,12 +77,13 @@ const (
 	DashboardElementTypeReportTemplate DashboardElementType = "report"
 	DashboardElementTypeGARealtime     DashboardElementType = "ga-realtime"
 	DashboardElementTypeNRServers      DashboardElementType = "nr-servers"
+	DashboardElementTypeTCTasks        DashboardElementType = "tc-tasks"
 )
 
 func (t DashboardElementType) Clean() DashboardElementType {
 	switch t {
 	case DashboardElementTypeReportTemplate, DashboardElementTypeGARealtime,
-		DashboardElementTypeNRServers:
+		DashboardElementTypeNRServers, DashboardElementTypeTCTasks:
 		return t
 	default:
 		return DashboardElementTypeInvalid

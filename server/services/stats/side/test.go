@@ -9,6 +9,7 @@ import (
 	"github.com/TheQuestionru/thequestion/server/lib/logger"
 	"github.com/TheQuestionru/thequestion/server/schema"
 	"github.com/TheQuestionru/thequestion/server/types"
+	"github.com/abourget/teamcity"
 	"github.com/ivankorobkov/di"
 	"github.com/yfronto/newrelic"
 	"math/rand"
@@ -19,6 +20,7 @@ func TestModule(m *di.Module) {
 	m.Import(logger.TestModule)
 	m.AddConstructor(NewTestConfig)
 	m.AddConstructor(NewTestGaClient)
+	m.AddConstructor(NewTestTcClient)
 	m.AddConstructor(NewNrClient)
 	m.AddConstructor(NewTest)
 }
@@ -27,10 +29,11 @@ type TestStats struct {
 	SideStats
 	gaClient GaClient
 	nrClient NrClient
+	tcClient TcClient
 }
 
-func NewTest(s SideStats, gaClient GaClient, nrClient NrClient) *TestStats {
-	ret := &TestStats{s, gaClient, nrClient}
+func NewTest(s SideStats, gaClient GaClient, nrClient NrClient, tcClient TcClient) *TestStats {
+	ret := &TestStats{s, gaClient, nrClient, tcClient}
 	return ret
 }
 
@@ -40,6 +43,10 @@ func NewTestConfig() Config {
 		Enabled:              true,
 		GoogleAnalyticsIds:   map[string]string{"TheQuestion": "ga:91655992"},
 		NewRelicApiKey:       "test",
+		TeamCityUser:         "",
+		TeamCityPass:         "",
+		TeamCityHost:         "test",
+		TeamCityCountGetTask: 5,
 	}
 }
 
@@ -63,6 +70,30 @@ func (t *testNrClient) GetServersStats() ([]newrelic.Server, error) {
 		})
 	}
 	return servers, nil
+}
+
+type testTcClient struct {
+	CountGetTask int8
+}
+
+func NewTestTcClient() TcClient {
+	return &testTcClient{
+		CountGetTask: 5,
+	}
+}
+
+func (t *testTcClient) GetBuildStats() ([]*teamcity.Build, error) {
+	tasks := make([]*teamcity.Build, t.CountGetTask, t.CountGetTask)
+
+	for i := 0; i < 5; i++ {
+		tasks[i] = &teamcity.Build{
+			ID:         int64(i),
+			StartDate:  teamcity.JSONTime(time.Now().String()),
+			StatusText: fmt.Sprintf("testStatus-%v", i),
+		}
+	}
+
+	return tasks, nil
 }
 
 type testGaClient struct {

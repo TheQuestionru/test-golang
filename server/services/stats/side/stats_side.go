@@ -3,6 +3,7 @@ package stats_side
 import (
 	"github.com/TheQuestionru/thequestion/server/lib/logger"
 	"github.com/TheQuestionru/thequestion/server/types"
+	"github.com/abourget/teamcity"
 	"github.com/ivankorobkov/di"
 	"github.com/yfronto/newrelic"
 	"regexp"
@@ -28,6 +29,10 @@ type Config struct {
 	Enabled              bool              `yaml:"Enabled"`
 	Schedule             string            `yaml:"Schedule"`
 	NewRelicApiKey       string            `yaml:"NewRelicApiKey"`
+	TeamCityUser         string            `yaml:"TeamCityUser"`
+	TeamCityPass         string            `yaml:"TeamCityPass"`
+	TeamCityHost         string            `yaml:"TeamCityHost"`
+	TeamCityCountGetTask int               `yaml:"TeamCityCountGetTask"`
 }
 
 type SideStats interface {
@@ -35,12 +40,13 @@ type SideStats interface {
 
 	Realtime() (int64, error)
 	ServersStats() ([]newrelic.Server, error)
+	BuildStats() ([]*teamcity.Build, error)
 }
-
 type sideStats struct {
 	logger   logger.Logger
 	gaClient GaClient
 	nrClient NrClient
+	tcClient TcClient
 	config   Config
 }
 
@@ -53,11 +59,12 @@ const (
 )
 
 func New(logger logger.Logger, config Config, gaClient GaClient,
-	nrClient NrClient) SideStats {
+	nrClient NrClient, tcClient TcClient) SideStats {
 	return &sideStats{
 		logger:   logger.Prefix("side-stats"),
 		gaClient: gaClient,
 		nrClient: nrClient,
+		tcClient: tcClient,
 		config:   config,
 	}
 }
@@ -85,6 +92,10 @@ func (t *sideStats) Realtime() (int64, error) {
 
 func (t *sideStats) ServersStats() ([]newrelic.Server, error) {
 	return t.nrClient.GetServersStats()
+}
+
+func (t *sideStats) BuildStats() ([]*teamcity.Build, error) {
+	return t.tcClient.GetBuildStats()
 }
 
 func (s *sideStats) tryRunUpdateGa(timestamp time.Time) error {
