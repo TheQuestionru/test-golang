@@ -44,7 +44,7 @@ func NewTestConfig() Config {
 		GoogleAnalyticsIds:     map[string]string{"TheQuestion": "ga:91655992"},
 		NewRelicApiKey:         "test",
 		TeamCityHost:           "test",
-		TeamCityCountGetBuilds: 10,
+		TeamCityCountGetBuilds: 5,
 	}
 }
 
@@ -71,21 +71,21 @@ func (t *testNrClient) GetServersStats() ([]newrelic.Server, error) {
 }
 
 type testTcClient struct {
-	CountGetTask int
+	CountGetBuilds int
 }
 
 func NewTestTcClient(config Config) TcClient {
 	return &testTcClient{
-		CountGetTask: config.TeamCityCountGetBuilds,
+		CountGetBuilds: config.TeamCityCountGetBuilds,
 	}
 }
 
 func (t *testTcClient) GetBuildStats() ([]teamcity.Build, error) {
 
-	tasks := make([]teamcity.Build, t.CountGetTask, t.CountGetTask)
+	builds := make([]teamcity.Build, t.CountGetBuilds, t.CountGetBuilds)
 	statuses := [4]teamcity.BuildStatus{teamcity.StatusUnknown, teamcity.StatusFailure, teamcity.StatusRunning, teamcity.StatusSuccess}
 	for i := 0; i < 5; i++ {
-		tasks[i] = teamcity.Build{
+		builds[i] = teamcity.Build{
 			ID:          int(i),
 			Number:      fmt.Sprintf("number-%v", i),
 			Status:      statuses[rand.Intn(4)],
@@ -95,7 +95,7 @@ func (t *testTcClient) GetBuildStats() ([]teamcity.Build, error) {
 		}
 	}
 
-	return tasks, nil
+	return builds, nil
 }
 
 type testGaClient struct {

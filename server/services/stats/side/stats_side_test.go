@@ -37,10 +37,10 @@ func TestSideStats_ServersStats(t *testing.T) {
 }
 
 func TestSideStats_BuildStats(t *testing.T) {
-	tasks, err := test.Stats.BuildStats()
+	builds, err := test.Stats.BuildStats()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	assert.Equal(t, 5, len(tasks))
+	assert.Equal(t, 5, len(builds))
 }

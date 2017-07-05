@@ -15,8 +15,8 @@ type TcClient interface {
 }
 
 type tcClient struct {
-	CountGetTask int
-	apiClient    teamcity.Client
+	CountGetBuilds int
+	apiClient      teamcity.Client
 }
 
 func NewTcClient(config Config) TcClient {
@@ -28,30 +28,30 @@ func NewTcClient(config Config) TcClient {
 	client := teamcity.NewClient(config.TeamCityHost, auth)
 
 	return &tcClient{
-		CountGetTask: config.TeamCityCountGetBuilds,
-		apiClient:    client,
+		CountGetBuilds: config.TeamCityCountGetBuilds,
+		apiClient:      client,
 	}
 }
 
 func (tc *tcClient) GetBuildStats() ([]teamcity.Build, error) {
 
-	builds, err := tc.apiClient.GetBuilds(tc.CountGetTask)
+	builds, err := tc.apiClient.GetBuilds(tc.CountGetBuilds)
 	if err != nil {
 		panic(err)
 	}
-	lenList := tc.CountGetTask
-	contGetTask := len(builds)
-	if lenList > contGetTask {
-		lenList = contGetTask
+	lenList := tc.CountGetBuilds
+	contGetBuilds := len(builds)
+	if lenList > contGetBuilds {
+		lenList = contGetBuilds
 	}
 
-	taskList := make([]teamcity.Build, lenList)
+	BuildsList := make([]teamcity.Build, lenList)
 
 	i := 0
-	for _, task := range builds {
-		taskList[i] = task
+	for _, build := range builds {
+		BuildsList[i] = build
 		i++
 	}
 
-	return taskList, nil
+	return BuildsList, nil
 }

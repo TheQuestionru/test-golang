@@ -55,7 +55,7 @@ type DashboardElementView struct {
 
 	Realtime types.NullInt64   `json:"realtime"`
 	Servers  []newrelic.Server `json:"servers,omitempty"`
-	Builds   []teamcity.Build  `json:"tasks,omitempty"`
+	Builds   []teamcity.Build  `json:"builds,omitempty"`
 }
 
 // forms
@@ -77,13 +77,13 @@ const (
 	DashboardElementTypeReportTemplate DashboardElementType = "report"
 	DashboardElementTypeGARealtime     DashboardElementType = "ga-realtime"
 	DashboardElementTypeNRServers      DashboardElementType = "nr-servers"
-	DashboardElementTypeTCBuild        DashboardElementType = "tc-builds"
+	DashboardElementTypeTCBuilds       DashboardElementType = "tc-builds"
 )
 
 func (t DashboardElementType) Clean() DashboardElementType {
 	switch t {
 	case DashboardElementTypeReportTemplate, DashboardElementTypeGARealtime,
-		DashboardElementTypeNRServers, DashboardElementTypeTCBuild:
+		DashboardElementTypeNRServers, DashboardElementTypeTCBuilds:
 		return t
 	default:
 		return DashboardElementTypeInvalid

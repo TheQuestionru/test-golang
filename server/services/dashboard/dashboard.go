@@ -69,7 +69,7 @@ func (t *dashboard) getDashboardGrid() ([][]*schema.DashboardElementView, error)
 		RowNumber: 0,
 		ColNumber: 0,
 		DashboardElementKey: schema.DashboardElementKey{
-			Type: schema.DashboardElementTypeTCBuild,
+			Type: schema.DashboardElementTypeTCBuilds,
 		},
 	})
 
@@ -96,7 +96,7 @@ func (t *dashboard) getDashboardGrid() ([][]*schema.DashboardElementView, error)
 					return nil, err
 				}
 
-			case schema.DashboardElementTypeTCBuild:
+			case schema.DashboardElementTypeTCBuilds:
 				var err error
 				elementView.Builds, err = t.sideStats.BuildStats()
 				if err != nil {
