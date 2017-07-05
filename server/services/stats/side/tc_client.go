@@ -1,8 +1,8 @@
 package stats_side
 
 import (
-	"github.com/abourget/teamcity"
 	"github.com/ivankorobkov/di"
+	"github.com/kapitanov/go-teamcity"
 )
 
 func TcClientModule(m *di.Module) {
@@ -11,28 +11,31 @@ func TcClientModule(m *di.Module) {
 }
 
 type TcClient interface {
-	GetBuildStats() ([]*teamcity.Build, error)
+	GetBuildStats() ([]teamcity.Build, error)
 }
 
 type tcClient struct {
 	CountGetTask int
-	apiClient    *teamcity.Client
+	apiClient    teamcity.Client
 }
 
 func NewTcClient(config Config) TcClient {
 
 	if config.TeamCityHost == "test" {
-		return NewTestTcClient()
+		return NewTestTcClient(config)
 	}
+	auth := teamcity.BasicAuth(config.TeamCityUser, config.TeamCityPass)
+	client := teamcity.NewClient(config.TeamCityHost, auth)
+
 	return &tcClient{
-		CountGetTask: config.TeamCityCountGetTask,
-		apiClient:    teamcity.New(config.TeamCityHost, config.TeamCityUser, config.TeamCityPass),
+		CountGetTask: config.TeamCityCountGetBuilds,
+		apiClient:    client,
 	}
 }
 
-func (tc *tcClient) GetBuildStats() ([]*teamcity.Build, error) {
+func (tc *tcClient) GetBuildStats() ([]teamcity.Build, error) {
 
-	builds, err := tc.apiClient.SearchBuild("all")
+	builds, err := tc.apiClient.GetBuilds(tc.CountGetTask)
 	if err != nil {
 		panic(err)
 	}
@@ -42,7 +45,7 @@ func (tc *tcClient) GetBuildStats() ([]*teamcity.Build, error) {
 		lenList = contGetTask
 	}
 
-	taskList := make([]*teamcity.Build, lenList, lenList)
+	taskList := make([]teamcity.Build, lenList)
 
 	i := 0
 	for _, task := range builds {

@@ -9,8 +9,8 @@ import (
 	"github.com/TheQuestionru/thequestion/server/lib/logger"
 	"github.com/TheQuestionru/thequestion/server/schema"
 	"github.com/TheQuestionru/thequestion/server/types"
-	"github.com/abourget/teamcity"
 	"github.com/ivankorobkov/di"
+	"github.com/kapitanov/go-teamcity"
 	"github.com/yfronto/newrelic"
 	"math/rand"
 )
@@ -39,14 +39,12 @@ func NewTest(s SideStats, gaClient GaClient, nrClient NrClient, tcClient TcClien
 
 func NewTestConfig() Config {
 	return Config{
-		GoogleServiceKeyFile: "test",
-		Enabled:              true,
-		GoogleAnalyticsIds:   map[string]string{"TheQuestion": "ga:91655992"},
-		NewRelicApiKey:       "test",
-		TeamCityUser:         "",
-		TeamCityPass:         "",
-		TeamCityHost:         "test",
-		TeamCityCountGetTask: 5,
+		GoogleServiceKeyFile:   "test",
+		Enabled:                true,
+		GoogleAnalyticsIds:     map[string]string{"TheQuestion": "ga:91655992"},
+		NewRelicApiKey:         "test",
+		TeamCityHost:           "test",
+		TeamCityCountGetBuilds: 10,
 	}
 }
 
@@ -73,23 +71,27 @@ func (t *testNrClient) GetServersStats() ([]newrelic.Server, error) {
 }
 
 type testTcClient struct {
-	CountGetTask int8
+	CountGetTask int
 }
 
-func NewTestTcClient() TcClient {
+func NewTestTcClient(config Config) TcClient {
 	return &testTcClient{
-		CountGetTask: 5,
+		CountGetTask: config.TeamCityCountGetBuilds,
 	}
 }
 
-func (t *testTcClient) GetBuildStats() ([]*teamcity.Build, error) {
-	tasks := make([]*teamcity.Build, t.CountGetTask, t.CountGetTask)
+func (t *testTcClient) GetBuildStats() ([]teamcity.Build, error) {
 
+	tasks := make([]teamcity.Build, t.CountGetTask, t.CountGetTask)
+	statuses := [4]teamcity.BuildStatus{teamcity.StatusUnknown, teamcity.StatusFailure, teamcity.StatusRunning, teamcity.StatusSuccess}
 	for i := 0; i < 5; i++ {
-		tasks[i] = &teamcity.Build{
-			ID:         int64(i),
-			StartDate:  teamcity.JSONTime(time.Now().String()),
-			StatusText: fmt.Sprintf("testStatus-%v", i),
+		tasks[i] = teamcity.Build{
+			ID:          int(i),
+			Number:      fmt.Sprintf("number-%v", i),
+			Status:      statuses[rand.Intn(4)],
+			StatusText:  fmt.Sprintf("testStatus-%v", i),
+			Progress:    rand.Intn(100),
+			BuildTypeID: fmt.Sprintf("BuildTypeID-%v", i),
 		}
 	}
 

@@ -3,8 +3,8 @@ package stats_side
 import (
 	"github.com/TheQuestionru/thequestion/server/lib/logger"
 	"github.com/TheQuestionru/thequestion/server/types"
-	"github.com/abourget/teamcity"
 	"github.com/ivankorobkov/di"
+	"github.com/kapitanov/go-teamcity"
 	"github.com/yfronto/newrelic"
 	"regexp"
 	"time"
@@ -24,16 +24,16 @@ func Module(m *di.Module) {
 }
 
 type Config struct {
-	GoogleServiceKeyFile string            `yaml:"GoogleServiceKeyFile"`
-	GoogleAnalyticsIds   map[string]string `yaml:"GoogleAnalyticsIds"`
-	GoogleDfpNetworkIds  map[string]string `yaml:"GoogleDfpNetworkIds"`
-	Enabled              bool              `yaml:"Enabled"`
-	Schedule             string            `yaml:"Schedule"`
-	NewRelicApiKey       string            `yaml:"NewRelicApiKey"`
-	TeamCityUser         string            `yaml:"TeamCityUser"`
-	TeamCityPass         string            `yaml:"TeamCityPass"`
-	TeamCityHost         string            `yaml:"TeamCityHost"`
-	TeamCityCountGetTask int               `yaml:"TeamCityCountGetTask"`
+	GoogleServiceKeyFile   string            `yaml:"GoogleServiceKeyFile"`
+	GoogleAnalyticsIds     map[string]string `yaml:"GoogleAnalyticsIds"`
+	GoogleDfpNetworkIds    map[string]string `yaml:"GoogleDfpNetworkIds"`
+	Enabled                bool              `yaml:"Enabled"`
+	Schedule               string            `yaml:"Schedule"`
+	NewRelicApiKey         string            `yaml:"NewRelicApiKey"`
+	TeamCityUser           string            `yaml:"TeamCityUser"`
+	TeamCityPass           string            `yaml:"TeamCityPass"`
+	TeamCityHost           string            `yaml:"TeamCityHost"`
+	TeamCityCountGetBuilds int               `yaml:"TeamCityCountGetBuilds"`
 }
 
 type SideStats interface {
@@ -41,7 +41,7 @@ type SideStats interface {
 
 	Realtime() (int64, error)
 	ServersStats() ([]newrelic.Server, error)
-	BuildStats() ([]*teamcity.Build, error)
+	BuildStats() ([]teamcity.Build, error)
 }
 type sideStats struct {
 	logger   logger.Logger
@@ -95,7 +95,7 @@ func (t *sideStats) ServersStats() ([]newrelic.Server, error) {
 	return t.nrClient.GetServersStats()
 }
 
-func (t *sideStats) BuildStats() ([]*teamcity.Build, error) {
+func (t *sideStats) BuildStats() ([]teamcity.Build, error) {
 	return t.tcClient.GetBuildStats()
 }
 

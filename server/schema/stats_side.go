@@ -2,7 +2,6 @@ package schema
 
 import (
 	"time"
-
 	"github.com/TheQuestionru/thequestion/server/types"
 )
 
