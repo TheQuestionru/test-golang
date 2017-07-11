@@ -1,12 +1,13 @@
 package dashboard
 
 import (
+	"sort"
+
 	"github.com/TheQuestionru/thequestion/server/lib/logger"
 	"github.com/TheQuestionru/thequestion/server/schema"
 	"github.com/TheQuestionru/thequestion/server/services/stats/side"
 	"github.com/TheQuestionru/thequestion/server/types"
 	"github.com/ivankorobkov/di"
-	"sort"
 )
 
 func Module(m *di.Module) {
@@ -85,6 +86,12 @@ func (t *dashboard) getDashboardGrid() ([][]*schema.DashboardElementView, error)
 			case schema.DashboardElementTypeNRServers:
 				var err error
 				elementView.Servers, err = t.sideStats.ServersStats()
+				if err != nil {
+					return nil, err
+				}
+			case schema.DashboardElementTypeTcClient:
+				var err error
+				elementView.Projects, err = t.sideStats.ProjectsStats()
 				if err != nil {
 					return nil, err
 				}
