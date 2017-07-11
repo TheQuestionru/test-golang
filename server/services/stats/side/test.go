@@ -10,6 +10,7 @@ import (
 	"github.com/TheQuestionru/thequestion/server/schema"
 	"github.com/TheQuestionru/thequestion/server/types"
 	"github.com/ivankorobkov/di"
+	"github.com/kapitanov/go-teamcity"
 	"github.com/yfronto/newrelic"
 	"math/rand"
 )
@@ -18,6 +19,7 @@ func TestModule(m *di.Module) {
 	m.Import(Module)
 	m.Import(logger.TestModule)
 	m.AddConstructor(NewTestConfig)
+	m.AddConstructor(NewTcClient)
 	m.AddConstructor(NewTestGaClient)
 	m.AddConstructor(NewNrClient)
 	m.AddConstructor(NewTest)
@@ -27,19 +29,22 @@ type TestStats struct {
 	SideStats
 	gaClient GaClient
 	nrClient NrClient
+	tcClient TcClient
 }
 
-func NewTest(s SideStats, gaClient GaClient, nrClient NrClient) *TestStats {
-	ret := &TestStats{s, gaClient, nrClient}
+func NewTest(s SideStats, gaClient GaClient, nrClient NrClient, tcClient TcClient) *TestStats {
+	ret := &TestStats{s, gaClient, nrClient, tcClient}
 	return ret
 }
 
 func NewTestConfig() Config {
 	return Config{
-		GoogleServiceKeyFile: "test",
-		Enabled:              true,
-		GoogleAnalyticsIds:   map[string]string{"TheQuestion": "ga:91655992"},
-		NewRelicApiKey:       "test",
+		GoogleServiceKeyFile:   "test",
+		Enabled:                true,
+		GoogleAnalyticsIds:     map[string]string{"TheQuestion": "ga:91655992"},
+		NewRelicApiKey:         "test",
+		TeamCityHost:           "test",
+		TeamCityCountGetBuilds: 5,
 	}
 }
 
@@ -63,6 +68,34 @@ func (t *testNrClient) GetServersStats() ([]newrelic.Server, error) {
 		})
 	}
 	return servers, nil
+}
+
+type testTcClient struct {
+	CountGetBuilds int
+}
+
+func NewTestTcClient(config Config) TcClient {
+	return &testTcClient{
+		CountGetBuilds: config.TeamCityCountGetBuilds,
+	}
+}
+
+func (t *testTcClient) GetBuildStats() ([]teamcity.Build, error) {
+
+	builds := make([]teamcity.Build, t.CountGetBuilds, t.CountGetBuilds)
+	statuses := [4]teamcity.BuildStatus{teamcity.StatusUnknown, teamcity.StatusFailure, teamcity.StatusRunning, teamcity.StatusSuccess}
+	for i := 0; i < 5; i++ {
+		builds[i] = teamcity.Build{
+			ID:          int(i),
+			Number:      fmt.Sprintf("number-%v", i),
+			Status:      statuses[rand.Intn(4)],
+			StatusText:  fmt.Sprintf("testStatus-%v", i),
+			Progress:    rand.Intn(100),
+			BuildTypeID: fmt.Sprintf("BuildTypeID-%v", i),
+		}
+	}
+
+	return builds, nil
 }
 
 type testGaClient struct {
