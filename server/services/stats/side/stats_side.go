@@ -7,6 +7,7 @@ import (
 	"github.com/yfronto/newrelic"
 	"regexp"
 	"time"
+	"github.com/kapitanov/go-teamcity"
 )
 
 var questionUri = regexp.MustCompile(`^/questions/(\d+)`)
@@ -18,6 +19,7 @@ func Module(m *di.Module) {
 		Config
 		GaClient
 		NrClient
+		TcClient
 	}{})
 }
 
@@ -28,6 +30,7 @@ type Config struct {
 	Enabled              bool              `yaml:"Enabled"`
 	Schedule             string            `yaml:"Schedule"`
 	NewRelicApiKey       string            `yaml:"NewRelicApiKey"`
+	TeamCityAddr         string            `yaml:"TeamCityAddr"`
 }
 
 type SideStats interface {
@@ -35,12 +38,14 @@ type SideStats interface {
 
 	Realtime() (int64, error)
 	ServersStats() ([]newrelic.Server, error)
+	TeamCityProjects() ([]teamcity.Project, error)
 }
 
 type sideStats struct {
 	logger   logger.Logger
 	gaClient GaClient
 	nrClient NrClient
+	tcClient TcClient
 	config   Config
 }
 
@@ -53,11 +58,12 @@ const (
 )
 
 func New(logger logger.Logger, config Config, gaClient GaClient,
-	nrClient NrClient) SideStats {
+	nrClient NrClient, tcClient TcClient) SideStats {
 	return &sideStats{
 		logger:   logger.Prefix("side-stats"),
 		gaClient: gaClient,
 		nrClient: nrClient,
+		tcClient: tcClient,
 		config:   config,
 	}
 }
@@ -125,4 +131,8 @@ func (s *sideStats) tryRunUpdateGa(timestamp time.Time) error {
 	}
 
 	return nil
+}
+
+func (s sideStats) TeamCityProjects() ([]teamcity.Project, error)  {
+	return s.tcClient.GetProjectList()
 }

@@ -129,6 +129,12 @@
 			"revisionTime": "2017-02-12T11:26:55Z"
 		},
 		{
+			"checksumSHA1": "Qqw2ey/b3n6LNLPHblfB79rpg5Q=",
+			"path": "github.com/kapitanov/go-teamcity",
+			"revision": "e0ff9695d1d5d047df7193047fc9421a7c6b5896",
+			"revisionTime": "2016-06-18T16:10:56Z"
+		},
+		{
 			"checksumSHA1": "oONaja1SA8xsG5eqRKz8UZ9IHVI=",
 			"path": "github.com/kr/pretty",
 			"revision": "cfb55aafdaf3ec08f0db22699ab822c50091b1c4",

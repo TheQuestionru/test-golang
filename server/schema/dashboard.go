@@ -6,6 +6,7 @@ import (
 	"github.com/TheQuestionru/thequestion/server/types"
 	"github.com/yfronto/newrelic"
 	"reflect"
+	"github.com/kapitanov/go-teamcity"
 )
 
 // errors
@@ -54,6 +55,7 @@ type DashboardElementView struct {
 
 	Realtime types.NullInt64   `json:"realtime"`
 	Servers  []newrelic.Server `json:"servers,omitempty"`
+	Projects []teamcity.Project `json:"projects,omitempty"`
 }
 
 // forms
@@ -75,6 +77,7 @@ const (
 	DashboardElementTypeReportTemplate DashboardElementType = "report"
 	DashboardElementTypeGARealtime     DashboardElementType = "ga-realtime"
 	DashboardElementTypeNRServers      DashboardElementType = "nr-servers"
+	DashboardElementTypeTCProjects     DashboardElementType = "tc-projects"
 )
 
 func (t DashboardElementType) Clean() DashboardElementType {

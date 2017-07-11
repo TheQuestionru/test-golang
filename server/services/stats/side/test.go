@@ -12,6 +12,7 @@ import (
 	"github.com/ivankorobkov/di"
 	"github.com/yfronto/newrelic"
 	"math/rand"
+	"github.com/kapitanov/go-teamcity"
 )
 
 func TestModule(m *di.Module) {
@@ -20,6 +21,7 @@ func TestModule(m *di.Module) {
 	m.AddConstructor(NewTestConfig)
 	m.AddConstructor(NewTestGaClient)
 	m.AddConstructor(NewNrClient)
+	m.AddConstructor(NewTestTcClient)
 	m.AddConstructor(NewTest)
 }
 
@@ -27,10 +29,11 @@ type TestStats struct {
 	SideStats
 	gaClient GaClient
 	nrClient NrClient
+	tcClient TcClient
 }
 
-func NewTest(s SideStats, gaClient GaClient, nrClient NrClient) *TestStats {
-	ret := &TestStats{s, gaClient, nrClient}
+func NewTest(s SideStats, gaClient GaClient, nrClient NrClient, tcClient TcClient) *TestStats {
+	ret := &TestStats{s, gaClient, nrClient, tcClient}
 	return ret
 }
 
@@ -40,6 +43,7 @@ func NewTestConfig() Config {
 		Enabled:              true,
 		GoogleAnalyticsIds:   map[string]string{"TheQuestion": "ga:91655992"},
 		NewRelicApiKey:       "test",
+		TeamCityAddr:         "test",
 	}
 }
 
@@ -135,3 +139,16 @@ var ErrTestDfpNetworkMissing = errors.New("Network incorrect")
 var ErrTestDfpIncorrectJobId = errors.New("Job id incorrect")
 var ErrTestDfpIncorrectJobStatus = errors.New("Job not ready")
 var ErrTestDfpIncorrectUrl = errors.New("Incorrect url")
+
+type testTcClient struct {
+}
+
+func NewTestTcClient() TcClient {
+	return testTcClient{}
+}
+
+func (testTcClient) GetProjectList() ([]teamcity.Project, error) {
+	return []teamcity.Project{
+		{ID: "test", Name: "Test"},
+	}, nil
+}
