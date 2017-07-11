@@ -1,10 +1,10 @@
 package dashboard
 
 import (
-	"github.com/TheQuestionru/thequestion/server/lib/logger"
-	"github.com/TheQuestionru/thequestion/server/schema"
-	"github.com/TheQuestionru/thequestion/server/services/stats/side"
-	"github.com/TheQuestionru/thequestion/server/types"
+	"github.com/TheQuestionru/test-golang/server/lib/logger"
+	"github.com/TheQuestionru/test-golang/server/schema"
+	"github.com/TheQuestionru/test-golang/server/services/stats/side"
+	"github.com/TheQuestionru/test-golang/server/types"
 	"github.com/ivankorobkov/di"
 	"sort"
 )
@@ -88,6 +88,13 @@ func (t *dashboard) getDashboardGrid() ([][]*schema.DashboardElementView, error)
 				if err != nil {
 					return nil, err
 				}
+			case schema.DashboradElementTypeTCClients:
+				_, err := t.sideStats.ProjectStats()
+				if err != nil {
+					return nil, err
+				}
+				//TODO: implement cast or new type.
+				//elementView.Realtime = types.NewNullInt64IfNotZero(values)
 			}
 
 			rowView = append(rowView, elementView)

@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/TheQuestionru/thequestion/server/lib/logger"
+	"github.com/TheQuestionru/test-golang/server/lib/logger"
 	"strings"
 )
 

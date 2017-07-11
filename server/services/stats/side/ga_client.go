@@ -4,9 +4,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/TheQuestionru/thequestion/server/lib/logger"
-	"github.com/TheQuestionru/thequestion/server/schema"
-	"github.com/TheQuestionru/thequestion/server/types"
+	"github.com/TheQuestionru/test-golang/server/lib/logger"
+	"github.com/TheQuestionru/test-golang/server/schema"
+	"github.com/TheQuestionru/test-golang/server/types"
 	"github.com/ivankorobkov/di"
 	"google.golang.org/api/analytics/v3"
 )
