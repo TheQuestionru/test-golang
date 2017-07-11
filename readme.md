@@ -27,6 +27,10 @@ make
 
 # Task
 
-Add TeamCity element type to dashboard, including tests.
+Add TeamCity element type to dashboard, including tests, use `newrelic` module as an example.
+
+Provide `Dockerfile`('s) to build & deploy code to production, and a `Dockerfile` for testing.
+
+
 
 Any questions to: `ngalayko@thequestion.ru`
