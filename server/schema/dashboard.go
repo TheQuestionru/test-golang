@@ -75,12 +75,13 @@ const (
 	DashboardElementTypeReportTemplate DashboardElementType = "report"
 	DashboardElementTypeGARealtime     DashboardElementType = "ga-realtime"
 	DashboardElementTypeNRServers      DashboardElementType = "nr-servers"
+	DashboardElementTypeTeamCity       DashboardElementType = "teamcity"
 )
 
 func (t DashboardElementType) Clean() DashboardElementType {
 	switch t {
 	case DashboardElementTypeReportTemplate, DashboardElementTypeGARealtime,
-		DashboardElementTypeNRServers:
+		DashboardElementTypeNRServers, DashboardElementTypeTeamCity:
 		return t
 	default:
 		return DashboardElementTypeInvalid

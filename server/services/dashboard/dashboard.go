@@ -58,13 +58,21 @@ func (t *dashboard) GetDashboard(req types.Req) (*schema.DashboardView, error) {
 func (t *dashboard) getDashboardGrid() ([][]*schema.DashboardElementView, error) {
 	elements := []*schema.DashboardElement{} // simulate db query
 
-	elements = append(elements, &schema.DashboardElement{
-		RowNumber: 0,
-		ColNumber: 0,
-		DashboardElementKey: schema.DashboardElementKey{
-			Type: schema.DashboardElementTypeNRServers,
+	elements = append(elements,
+		&schema.DashboardElement{
+			RowNumber: 0,
+			ColNumber: 0,
+			DashboardElementKey: schema.DashboardElementKey{
+				Type: schema.DashboardElementTypeNRServers,
+			},
 		},
-	})
+		&schema.DashboardElement{
+			RowNumber: 0,
+			ColNumber: 1,
+			DashboardElementKey: schema.DashboardElementKey{
+				Type: schema.DashboardElementTypeTeamCity,
+			},
+		})
 
 	grid := t.makeGrid(elements)
 	view := [][]*schema.DashboardElementView{}
