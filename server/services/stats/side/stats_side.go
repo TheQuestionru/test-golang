@@ -28,6 +28,10 @@ type Config struct {
 	Enabled              bool              `yaml:"Enabled"`
 	Schedule             string            `yaml:"Schedule"`
 	NewRelicApiKey       string            `yaml:"NewRelicApiKey"`
+	TeamCityViewTaskCount int              `yaml:"TeamCityViewTaskCount"`
+	TeamCityUrl          string `yaml:"TeamCityUrl"`
+	TeamCityUser         string `yaml:"TeamCityUser"`
+	TeamCityPassword     string `yaml:"TeamCityPassword"`
 }
 
 type SideStats interface {
@@ -35,13 +39,15 @@ type SideStats interface {
 
 	Realtime() (int64, error)
 	ServersStats() ([]newrelic.Server, error)
+	TeamCityView() ([]TaskView, error)
 }
 
 type sideStats struct {
-	logger   logger.Logger
-	gaClient GaClient
-	nrClient NrClient
-	config   Config
+	logger      logger.Logger
+	gaClient    GaClient
+	nrClient    NrClient
+	teamCityAPI teamCityClient
+	config      Config
 }
 
 const (
@@ -53,11 +59,12 @@ const (
 )
 
 func New(logger logger.Logger, config Config, gaClient GaClient,
-	nrClient NrClient) SideStats {
+	nrClient NrClient, teamCityAPI teamCityClient) SideStats {
 	return &sideStats{
 		logger:   logger.Prefix("side-stats"),
 		gaClient: gaClient,
 		nrClient: nrClient,
+		teamCityAPI: teamCityAPI,
 		config:   config,
 	}
 }
