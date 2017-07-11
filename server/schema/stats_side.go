@@ -60,3 +60,8 @@ type AnalyticsGaStatsQuery struct {
 	End        types.Date          `json:"end" db:"end"`
 	GroupBy    types.GroupByPeriod `json:"groupBy" db:"-"`
 }
+
+type TcBuild struct {
+	ID     int
+	Status string
+}

@@ -1,12 +1,14 @@
 package stats_side
 
 import (
+	"regexp"
+	"time"
+
 	"github.com/TheQuestionru/thequestion/server/lib/logger"
+	"github.com/TheQuestionru/thequestion/server/schema"
 	"github.com/TheQuestionru/thequestion/server/types"
 	"github.com/ivankorobkov/di"
 	"github.com/yfronto/newrelic"
-	"regexp"
-	"time"
 )
 
 var questionUri = regexp.MustCompile(`^/questions/(\d+)`)
@@ -18,6 +20,7 @@ func Module(m *di.Module) {
 		Config
 		GaClient
 		NrClient
+		TcClient
 	}{})
 }
 
@@ -28,6 +31,9 @@ type Config struct {
 	Enabled              bool              `yaml:"Enabled"`
 	Schedule             string            `yaml:"Schedule"`
 	NewRelicApiKey       string            `yaml:"NewRelicApiKey"`
+	TcUrl                string            `yaml:"TcUrl"`
+	TcUsername           string            `yaml:"TcUsername"`
+	TcPassword           string            `yaml:"TcPassword"`
 }
 
 type SideStats interface {
@@ -35,12 +41,14 @@ type SideStats interface {
 
 	Realtime() (int64, error)
 	ServersStats() ([]newrelic.Server, error)
+	TcBuilds() ([]*schema.TcBuild, error)
 }
 
 type sideStats struct {
 	logger   logger.Logger
 	gaClient GaClient
 	nrClient NrClient
+	tcClient TcClient
 	config   Config
 }
 
@@ -52,12 +60,15 @@ const (
 	rtGAKeyName = "TheQuestion"
 )
 
-func New(logger logger.Logger, config Config, gaClient GaClient,
-	nrClient NrClient) SideStats {
+func New(
+	logger logger.Logger, config Config, gaClient GaClient,
+	nrClient NrClient, tcClient TcClient,
+) SideStats {
 	return &sideStats{
 		logger:   logger.Prefix("side-stats"),
 		gaClient: gaClient,
 		nrClient: nrClient,
+		tcClient: tcClient,
 		config:   config,
 	}
 }
@@ -85,6 +96,10 @@ func (t *sideStats) Realtime() (int64, error) {
 
 func (t *sideStats) ServersStats() ([]newrelic.Server, error) {
 	return t.nrClient.GetServersStats()
+}
+
+func (t *sideStats) TcBuilds() ([]*schema.TcBuild, error) {
+	return t.tcClient.TcGetBuilds()
 }
 
 func (s *sideStats) tryRunUpdateGa(timestamp time.Time) error {
