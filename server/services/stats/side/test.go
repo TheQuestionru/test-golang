@@ -2,16 +2,16 @@ package stats_side
 
 import (
 	"errors"
+	"fmt"
+	"math/rand"
 	"testing"
 	"time"
 
-	"fmt"
 	"github.com/TheQuestionru/thequestion/server/lib/logger"
 	"github.com/TheQuestionru/thequestion/server/schema"
 	"github.com/TheQuestionru/thequestion/server/types"
 	"github.com/ivankorobkov/di"
 	"github.com/yfronto/newrelic"
-	"math/rand"
 )
 
 func TestModule(m *di.Module) {
@@ -20,6 +20,7 @@ func TestModule(m *di.Module) {
 	m.AddConstructor(NewTestConfig)
 	m.AddConstructor(NewTestGaClient)
 	m.AddConstructor(NewNrClient)
+	m.AddConstructor(NewTcClient)
 	m.AddConstructor(NewTest)
 }
 
@@ -27,10 +28,11 @@ type TestStats struct {
 	SideStats
 	gaClient GaClient
 	nrClient NrClient
+	tcClient TcClient
 }
 
-func NewTest(s SideStats, gaClient GaClient, nrClient NrClient) *TestStats {
-	ret := &TestStats{s, gaClient, nrClient}
+func NewTest(s SideStats, gaClient GaClient, nrClient NrClient, tcClient TcClient) *TestStats {
+	ret := &TestStats{s, gaClient, nrClient, tcClient}
 	return ret
 }
 
@@ -40,7 +42,30 @@ func NewTestConfig() Config {
 		Enabled:              true,
 		GoogleAnalyticsIds:   map[string]string{"TheQuestion": "ga:91655992"},
 		NewRelicApiKey:       "test",
+		TcUrl:                "http://localhost:8111",
+		TcUsername:           "root",
+		TcPassword:           "064695",
 	}
+}
+
+type testTcClient struct {
+}
+
+func NewTestTcClient() TcClient {
+	return &testTcClient{}
+}
+
+func (t *testTcClient) TcGetBuilds() ([]*schema.TcBuild, error) {
+	return []*schema.TcBuild{
+		{
+			ID:     1,
+			Status: "",
+		},
+		{
+			ID:     2,
+			Status: "",
+		},
+	}, nil
 }
 
 type testNrClient struct {
@@ -97,7 +122,6 @@ func (c *testGaClient) GaGetQuestionsData(id string, from time.Time, to time.Tim
 }
 
 func (c *testGaClient) GaGetRealtime(id string) (int64, error) {
-
 	return rand.Int63n(int64(10000)), nil
 }
 
