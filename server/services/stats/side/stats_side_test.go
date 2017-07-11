@@ -35,3 +35,12 @@ func TestSideStats_ServersStats(t *testing.T) {
 
 	assert.Equal(t, 10, len(servers))
 }
+
+func TestSideStats_GetAGents(t *testing.T) {
+	agents, err := test.Stats.GetAgents()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Equal(t, 3, len(agents))
+}

@@ -7,6 +7,7 @@ import (
 	"github.com/yfronto/newrelic"
 	"regexp"
 	"time"
+	"github.com/TheQuestionru/thequestion/server/schema"
 )
 
 var questionUri = regexp.MustCompile(`^/questions/(\d+)`)
@@ -18,6 +19,7 @@ func Module(m *di.Module) {
 		Config
 		GaClient
 		NrClient
+		TcClient
 	}{})
 }
 
@@ -28,6 +30,8 @@ type Config struct {
 	Enabled              bool              `yaml:"Enabled"`
 	Schedule             string            `yaml:"Schedule"`
 	NewRelicApiKey       string            `yaml:"NewRelicApiKey"`
+	TeamcityAuthHeader   string            `yaml:"TeamcityAuthHeader"`
+	TeamcityEndpoint     string            `yaml:"TeamcityEndpoint"`
 }
 
 type SideStats interface {
@@ -35,12 +39,14 @@ type SideStats interface {
 
 	Realtime() (int64, error)
 	ServersStats() ([]newrelic.Server, error)
+	GetAgents() ([]schema.Agent, error)
 }
 
 type sideStats struct {
 	logger   logger.Logger
 	gaClient GaClient
 	nrClient NrClient
+	tcClient TcClient
 	config   Config
 }
 
@@ -53,11 +59,12 @@ const (
 )
 
 func New(logger logger.Logger, config Config, gaClient GaClient,
-	nrClient NrClient) SideStats {
+	nrClient NrClient, tcClient TcClient) SideStats {
 	return &sideStats{
 		logger:   logger.Prefix("side-stats"),
 		gaClient: gaClient,
 		nrClient: nrClient,
+		tcClient: tcClient,
 		config:   config,
 	}
 }
@@ -85,6 +92,10 @@ func (t *sideStats) Realtime() (int64, error) {
 
 func (t *sideStats) ServersStats() ([]newrelic.Server, error) {
 	return t.nrClient.GetServersStats()
+}
+
+func (t *sideStats) GetAgents() ([]schema.Agent, error) {
+	return t.tcClient.GetAgents()
 }
 
 func (s *sideStats) tryRunUpdateGa(timestamp time.Time) error {

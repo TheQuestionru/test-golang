@@ -66,6 +66,14 @@ func (t *dashboard) getDashboardGrid() ([][]*schema.DashboardElementView, error)
 		},
 	})
 
+	elements = append(elements, &schema.DashboardElement{
+		RowNumber: 0,
+		ColNumber: 1,
+		DashboardElementKey: schema.DashboardElementKey{
+			Type: schema.DashboardElementTypeTCAgents,
+		},
+	})
+
 	grid := t.makeGrid(elements)
 	view := [][]*schema.DashboardElementView{}
 	for _, row := range grid {
@@ -80,11 +88,16 @@ func (t *dashboard) getDashboardGrid() ([][]*schema.DashboardElementView, error)
 				if err != nil {
 					return nil, err
 				}
-
 				elementView.Realtime = types.NewNullInt64(realtime)
 			case schema.DashboardElementTypeNRServers:
 				var err error
 				elementView.Servers, err = t.sideStats.ServersStats()
+				if err != nil {
+					return nil, err
+				}
+			case schema.DashboardElementTypeTCAgents:
+				var err error
+				elementView.Agents, err = t.sideStats.GetAgents()
 				if err != nil {
 					return nil, err
 				}
