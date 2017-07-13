@@ -1,11 +1,12 @@
 package dashboard
 
 import (
+	"os"
+	"testing"
+
 	"github.com/TheQuestionru/thequestion/server/types"
 	"github.com/ivankorobkov/di"
 	"github.com/stretchr/testify/assert"
-	"os"
-	"testing"
 )
 
 var test struct {
@@ -25,4 +26,5 @@ func TestDashboard_UpdateElements__should_update_elements(t *testing.T) {
 	}
 
 	assert.Equal(t, 10, len(dashboard.Rows[0].Elements[0].Servers))
+	assert.Equal(t, 5, len(dashboard.Rows[1].Elements[0].Builds))
 }

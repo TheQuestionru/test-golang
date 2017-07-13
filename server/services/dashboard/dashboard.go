@@ -1,12 +1,13 @@
 package dashboard
 
 import (
+	"sort"
+
 	"github.com/TheQuestionru/thequestion/server/lib/logger"
 	"github.com/TheQuestionru/thequestion/server/schema"
-	"github.com/TheQuestionru/thequestion/server/services/stats/side"
+	stats_side "github.com/TheQuestionru/thequestion/server/services/stats/side"
 	"github.com/TheQuestionru/thequestion/server/types"
 	"github.com/ivankorobkov/di"
-	"sort"
 )
 
 func Module(m *di.Module) {
@@ -66,6 +67,14 @@ func (t *dashboard) getDashboardGrid() ([][]*schema.DashboardElementView, error)
 		},
 	})
 
+	elements = append(elements, &schema.DashboardElement{
+		RowNumber: 1,
+		ColNumber: 0,
+		DashboardElementKey: schema.DashboardElementKey{
+			Type: schema.DashboardElementTypeTCBuilds,
+		},
+	})
+
 	grid := t.makeGrid(elements)
 	view := [][]*schema.DashboardElementView{}
 	for _, row := range grid {
@@ -75,6 +84,13 @@ func (t *dashboard) getDashboardGrid() ([][]*schema.DashboardElementView, error)
 			elementView.DashboardElement = element
 
 			switch elementView.Type {
+			case schema.DashboardElementTypeTCBuilds:
+				builds, err := t.sideStats.Builds()
+				if err != nil {
+					return nil, err
+				}
+
+				elementView.Builds = builds
 			case schema.DashboardElementTypeGARealtime:
 				realtime, err := t.sideStats.Realtime()
 				if err != nil {
