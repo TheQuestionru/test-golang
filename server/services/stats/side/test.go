@@ -6,12 +6,14 @@ import (
 	"time"
 
 	"fmt"
+	"math/rand"
+
 	"github.com/TheQuestionru/thequestion/server/lib/logger"
 	"github.com/TheQuestionru/thequestion/server/schema"
 	"github.com/TheQuestionru/thequestion/server/types"
 	"github.com/ivankorobkov/di"
+	teamcity "github.com/kapitanov/go-teamcity"
 	"github.com/yfronto/newrelic"
-	"math/rand"
 )
 
 func TestModule(m *di.Module) {
@@ -20,6 +22,7 @@ func TestModule(m *di.Module) {
 	m.AddConstructor(NewTestConfig)
 	m.AddConstructor(NewTestGaClient)
 	m.AddConstructor(NewNrClient)
+	m.AddConstructor(NewTcClient)
 	m.AddConstructor(NewTest)
 }
 
@@ -40,6 +43,7 @@ func NewTestConfig() Config {
 		Enabled:              true,
 		GoogleAnalyticsIds:   map[string]string{"TheQuestion": "ga:91655992"},
 		NewRelicApiKey:       "test",
+		TeamCityHost:         "test",
 	}
 }
 
@@ -47,8 +51,19 @@ type testNrClient struct {
 	count int
 }
 
+type testTcClient struct {
+}
+
 func NewTestNrClient() NrClient {
 	return &testNrClient{}
+}
+
+func NewTestTcClient() TcClient {
+	return &testTcClient{}
+}
+
+func (t *testTcClient) GetBuilds() ([]teamcity.Build, error) {
+	return []teamcity.Build{teamcity.Build{}, teamcity.Build{}, teamcity.Build{}, teamcity.Build{}, teamcity.Build{}}, nil
 }
 
 func (t *testNrClient) GetServersStats() ([]newrelic.Server, error) {
